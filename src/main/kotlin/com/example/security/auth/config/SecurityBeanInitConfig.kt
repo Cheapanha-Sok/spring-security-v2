@@ -1,5 +1,6 @@
 package com.example.security.auth.config
 
+import com.example.security.auth.exception.BadCredentialsExceptionCustom
 import com.example.security.auth.exception.NotFoundExceptionCustom
 import com.example.security.auth.permission.UserPrinciple
 import com.example.security.auth.repository.UserRepository
@@ -19,7 +20,7 @@ class SecurityBeanInitConfig(
     @Bean
     fun userDetailsService(): UserDetailsService {
         return UserDetailsService { username: String? ->
-            val user = userRepository.findByUsernameAndStatusIsTrue(username) ?: throw NotFoundExceptionCustom("User with $username Not Found")
+            val user = userRepository.findByUsernameAndStatusIsTrue(username) ?: throw BadCredentialsExceptionCustom("User with $username Not Found")
             UserPrinciple(user.id!!, user.username, user.password, user.status!!, null)
         }
     }

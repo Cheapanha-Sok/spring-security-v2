@@ -8,6 +8,7 @@ import com.example.security.auth.jwt_filter.JwtService
 import com.example.security.auth.models.User
 import com.example.security.auth.permission.UserPrinciple
 import com.example.security.auth.repository.UserRepository
+import com.example.security.auth.request.ChangePassRequest
 import com.example.security.auth.service.AuthenticationService
 import com.example.security.auth.service.CustomUserDetailsService
 import com.example.security.utilities.annotation.Sl4JLogger.Companion.log
@@ -19,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.nio.file.attribute.UserPrincipal
 
 @Service
 class IAuthenticationService(
@@ -60,9 +60,18 @@ class IAuthenticationService(
         jwtService.generateRefreshToken(userDetail).let { return it }
     }
 
+    override fun changePassword(userId: Long, req: ChangePassRequest) {
+        val user = userRepository.findById(userId).orElseThrow { NotFoundExceptionCustom("User with id $userId does not exist") }
+        if (!passwordEncoder.matches(req.currentPassword , user.password))
+            throw BadRequestExceptionCustom("Invalid password")
+
+        user.password = passwordEncoder.encode(req.newPassword)
+        userRepository.save(user)
+    }
+
     override fun getInfo(): User {
         val auth = SecurityContextHolder.getContext().authentication.principal as UserPrinciple
-        return userRepository.findByUsernameAndStatusIsTrue(auth.username) ?: throw NotFoundExceptionCustom("User with ${auth.username} not found")
+        return userRepository.findByUsernameAndStatusIsTrue(auth.username) ?: throw BadCredentialsExceptionCustom("User with ${auth.username} not found")
     }
 
     private fun authenticate(username: String, password: String){

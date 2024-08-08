@@ -1,7 +1,6 @@
 package com.example.security.auth.service
 
 import com.example.security.auth.exception.BadCredentialsExceptionCustom
-import com.example.security.auth.exception.NotFoundExceptionCustom
 import com.example.security.auth.permission.UserPrinciple
 import com.example.security.auth.repository.UserRepository
 import org.springframework.security.core.GrantedAuthority

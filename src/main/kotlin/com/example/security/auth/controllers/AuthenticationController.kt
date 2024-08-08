@@ -9,7 +9,6 @@ import com.example.security.auth.permission.UserPrinciple
 import com.example.security.auth.request.ChangePassRequest
 import com.example.security.auth.request.JWTAuthenticationRequest
 import com.example.security.auth.service.AuthenticationService
-import com.example.security.auth.service.UserService
 import com.example.security.utilities.constants.AppConstant
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.context.SecurityContextHolder
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping(AppConstant.MAIN_PATH+"/auth")
 class AuthenticationController(
     private val authenticationService: AuthenticationService,
-    private val userService: UserService,
 ) {
     @PostMapping("/login")
     fun login(@RequestBody auth: JWTAuthenticationRequest): JWTAuthenticationResponse? {
@@ -46,7 +44,7 @@ class AuthenticationController(
         } catch (e: Exception) {
             throw BadCredentialsExceptionCustom("Invalid token", e)
         }
-        userService.changePassword(auth.getId(), req)
+        authenticationService.changePassword(auth.getId(), req)
         SecurityContextHolder.clearContext()
         return true
     }

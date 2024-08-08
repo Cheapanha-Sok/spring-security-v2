@@ -1,17 +1,15 @@
 package com.example.security.auth.exception
 
 import com.example.security.auth.dto.NotFoundDto
-import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
 import java.time.LocalTime
 
-@RestControllerAdvice
+@ControllerAdvice
 class GlobalResponseException {
 
-    @ResponseStatus(HttpStatus.ACCEPTED)
     @ExceptionHandler(NotFoundExceptionCustom::class)
     fun handleNotFoundHandler(ex : NotFoundExceptionCustom) :ResponseEntity<NotFoundDto>{
         val errorMessage = NotFoundDto(
