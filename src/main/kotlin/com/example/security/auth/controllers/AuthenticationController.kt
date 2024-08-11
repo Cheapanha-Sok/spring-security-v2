@@ -10,7 +10,10 @@ import com.example.security.auth.request.ChangePassRequest
 import com.example.security.auth.request.JWTAuthenticationRequest
 import com.example.security.auth.service.AuthenticationService
 import com.example.security.utilities.constants.AppConstant
+import com.panha.base.response.JSONFormat
+import com.panha.base.response.ResponseDTO
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping(AppConstant.MAIN_PATH+"/auth")
 class AuthenticationController(
     private val authenticationService: AuthenticationService,
+    private val jsonFormat: JSONFormat
 ) {
     @PostMapping("/login")
     fun login(@RequestBody auth: JWTAuthenticationRequest): JWTAuthenticationResponse? {
@@ -33,8 +37,8 @@ class AuthenticationController(
         return authenticationService.refreshToken(http)
     }
     @GetMapping("/info")
-    fun getInfo() : User{
-        return authenticationService.getInfo()
+    fun getInfo() :ResponseDTO {
+        return jsonFormat.respondObj(authenticationService.getInfo() , HttpStatus.OK , "fetch user info")
     }
     @PostMapping("/change-password")
     fun changePassword(@RequestBody req: ChangePassRequest): Boolean {
