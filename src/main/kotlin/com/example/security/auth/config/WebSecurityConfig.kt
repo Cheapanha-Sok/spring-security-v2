@@ -4,7 +4,7 @@ import com.example.security.auth.jwt_filter.JwtAuthenticationEntryPoint
 import com.example.security.auth.jwt_filter.JwtRequestFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -22,7 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class WebSecurityConfig(
     private val unauthorizedHandler: JwtAuthenticationEntryPoint,
     private val jwtRequestFilter: JwtRequestFilter,
-    private val authenticationProvider: DaoAuthenticationProvider // Use DaoAuthenticationProvider instead
+    private val authenticationProvider: AuthenticationProvider // Use DaoAuthenticationProvider instead
 ) {
 
     @Bean
@@ -30,7 +30,7 @@ class WebSecurityConfig(
         http
             .cors { corsConfigurationSource() }
             .csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
-            .authorizeHttpRequests { req -> req
+            .authorizeHttpRequests { req ->
                 req.requestMatchers(
 //                    "/api/v1/**",
                     "/resources/**",

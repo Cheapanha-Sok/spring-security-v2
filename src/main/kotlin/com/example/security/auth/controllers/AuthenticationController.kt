@@ -2,7 +2,6 @@ package com.example.security.auth.controllers
 
 import org.springframework.web.bind.annotation.RestController
 
-import com.example.security.auth.dto.JWTAuthenticationResponse
 import com.example.security.auth.exception.BadCredentialsExceptionCustom
 import com.example.security.auth.models.User
 import com.example.security.auth.permission.UserPrinciple
@@ -25,16 +24,16 @@ class AuthenticationController(
     private val jsonFormat: JSONFormat
 ) {
     @PostMapping("/login")
-    fun login(@RequestBody auth: JWTAuthenticationRequest): JWTAuthenticationResponse? {
-        return authenticationService.signIn(auth.username, auth.password)
+    fun login(@RequestBody auth: JWTAuthenticationRequest): ResponseDTO {
+        return jsonFormat.respondObj(authenticationService.signIn(auth.username, auth.password) , HttpStatus.OK , "Login successful")
     }
     @PostMapping("/signup")
-    fun signup(@RequestBody req: User): User {
-        return authenticationService.signUp(req)
+    fun signup(@RequestBody req: User): ResponseDTO {
+        return jsonFormat.respondObj(authenticationService.signUp(req) , HttpStatus.OK , "Sign up successful")
     }
     @PostMapping("/refresh-token")
-    fun refreshToken(http : HttpServletRequest): JWTAuthenticationResponse {
-        return authenticationService.refreshToken(http)
+    fun refreshToken(http : HttpServletRequest): ResponseDTO {
+        return jsonFormat.respondObj(authenticationService.refreshToken(http) ,HttpStatus.OK , "Refresh token successful")
     }
     @GetMapping("/info")
     fun getInfo() :ResponseDTO {

@@ -32,7 +32,6 @@ class IAuthenticationService(
 
     override fun signIn(username: String, password: String): JWTAuthenticationResponse {
 
-        log.info("hello")
         val userDetail = customUserDetailsService.loadUserByUsername(username)
         log.info("load user {} successful", username)
 
@@ -56,7 +55,7 @@ class IAuthenticationService(
     override fun refreshToken(http: HttpServletRequest): JWTAuthenticationResponse {
         val token: String = jwtService.extractUsername(http.getHeader("Authorization").substringAfter("Bearer "))
         val userDetail = customUserDetailsService.loadUserByUsername(token.split("|")[1])
-        log.info("successfully loaded user {}", userDetail.username)
+        log.info("load user {} successful", userDetail.username)
         jwtService.generateRefreshToken(userDetail).let { return it }
     }
 
